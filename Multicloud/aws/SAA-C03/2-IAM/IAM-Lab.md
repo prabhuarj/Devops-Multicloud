@@ -2,7 +2,7 @@
 
 #### Author : Prabhu Arjunan
 
-### Identity & Access Management (IAM)
+## Identity & Access Management (IAM)
 
 # **Task 1: Create an IAM User and Attach Policies** 
 

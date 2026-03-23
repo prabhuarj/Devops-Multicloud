@@ -94,7 +94,7 @@ io1/io2 → High IOPS workloads (databases)
 
 For general workloads → gp3 is recommended.
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/instance_tags.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/instance_tags.png)
 
 
 
@@ -125,7 +125,7 @@ We can connect to EC2 using
 
 ssh \-i your-key.pem ec2-user@\<public-ip\>
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/instance_keys.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/instance_keys.png)
 
 **Step 4: Network Settings**
 
@@ -135,23 +135,23 @@ To connect to your machine via Internet Enable Public IP option . so we can ssh 
 
 As we discussed security group earlier by default all inbound traffic are denied so as of now we can enable port 22 for SSH and 80 and 443 for HTTP and HTTPS. I f you not add port 22 to security rule no matter what you are not able to SSH into the Instance 
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/instance_sg.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/instance_sg.png)
 
 **Step 5: Storage**
 
 As we discussed earlier we can choose storage volumes based on requirement standard gp3 gp2 and iops. For this instance we choose 8 GB gp3(general Purpose)
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/Storage.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/Storage.png)
 
 There are more advanced section in Instance where we can upload script, IAM (like adding role to this instance etc), Placement group etc . we can use if we need
 
 Now if done click Launch instance. Now we see the instance is running.
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/instance_id.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/instance_id.png)
 
 Once running we can verify by SSH into the VM. 
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/ssh_vm.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/ssh_vm.png)
 
 # **Task 2: Create a Snapshot of the Instance’s Root Volume**
 
@@ -159,21 +159,21 @@ Once running we can verify by SSH into the VM.
 
 Go to EC2 Main page →In left pane under EBS→ Click volume . You could see the volume there for the Instance we created in Task1
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/volume_created.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/volume_created.png)
 
 Now Slect the volume and Actions and click Create Snapshot
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/create_snap_from_vol.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/create_snap_from_vol.png)
 
 **Step2:**
 
 Give a valid name and add Tags (if required) and Click create snapshot
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/create_snapshot.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/create_snapshot.png)
 
 Now under EBS and go to snapshot and see if the status gets completed. Now this will create a snapshot for the volume
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/snapshot_status.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/snapshot_status.png)
 
 Once the snapshot is completed we can do multiple actions with the snapshot created like
 
@@ -188,7 +188,7 @@ To create a new volume from the snapshot. Go to snapshots and find the one you c
 
 In EC2 Page→ In left pane under EBS→Snapshots→ Create New volume from snapshot
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/create_vol_from_snapshot.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/create_vol_from_snapshot.png)
 
 **Step2:**
 
@@ -200,7 +200,7 @@ Optionally if you want to encrypt the volume you can click the “Encrypt this v
 
 Then click Create volume
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/volume_settings.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/volume_settings.png)
 
 **Step3:  Attach the New Volume to EC2 Instance**
 
@@ -208,9 +208,9 @@ So once the volume gets created go to volume in left pane and find the Volume th
 
 You can identify by after creation it will display a Volume ID and also you can look out for Attached resources. Since this the new one created from snapshot you wont find any resource attached under it. We are going to attach the resource in next steps
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/vol_id.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/vol_id.png)
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/attached_Resource_status.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/attached_Resource_status.png)
 
 Now click the Volume →Actions→Attachvolume
 
@@ -218,26 +218,26 @@ In Attach volume page select the Instance you created earlier and also choose an
 
 Click Attach volume
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/attach_volume.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/attach_volume.png)
 
 Now once the volume is attached to a resource . You can see the resource under attached resource.
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/attached_resource_view.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/attached_resource_view.png)
 **Step4:**
 
   Now in EC2 Instance if we go to the Created Instance and in the storage tab you can see a new volume gets attached to it. The another volume is attached during creation.
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/new_volume_attached.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/new_volume_attached.png)
 
 **Step 5:**
 
   **Now we have added the volume to EC2 Instance but still we did not mount it, We need to mount the volume so the EC2 instance can use it. In below screenshot you can see “XVDA” is mounted but “XVDZ” not. So we are going to mount it**
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/listblock.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/listblock.png)
 
 Follow the steps provided in the shared Amazon EBS Volume – Available for Use document to mount the attached volume to the EC2 instance.
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/volume_cli.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/volume_cli.png)
 
 # **TASK 4: Create an AMI Using the Snapshot**
 
@@ -251,19 +251,19 @@ There are two common approaches:
 
  For this we need to go to EC2→In left pane under EBS→Snapshots→Actions —\> Create image from snapshot
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/create_image_from_snapshot.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/create_image_from_snapshot.png)
 
 **Step2:**
 
   Enter all the details required for the AMI Creation and create image
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/image_from_snapshot.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/image_from_snapshot.png)
 
 Once the image is created under Images → AMI. You will see the AMI that we created.
 
 As we discussed in TASK 1 – Every os with different version will have different AMIs. Similarly the image we create from the Instance or from the snapshot will have different AMI assigned. We can use this AMI to build any number of Instances.
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/ami.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/ami.png)
 
 **Step3:**
 
@@ -273,12 +273,12 @@ So in Launch instance page go to My AMIs →owned by me
 You will find the images we [created.we](http://created.we) can choose from it. If there is only one AMI it will be automatically picked  
 Rest of the options are same as we did in TASK1
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/instance_from_ami.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/instance_from_ami.png)
 
 **Step4:**
 
 A new instance has been created using the existing image and verify the connectivity
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/amiinstanceid.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/amiinstanceid.png)
 
-![EC2 Instance Dashboard](../assets/.labImages/ec2/instance_login.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/instance_login.png)

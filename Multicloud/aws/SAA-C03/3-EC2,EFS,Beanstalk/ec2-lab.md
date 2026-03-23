@@ -210,7 +210,7 @@ You can identify by after creation it will display a Volume ID and also you can 
 
 ![EC2 Instance Dashboard](../assets/.labImages/EC2/vol_id.png)
 
-![EC2 Instance Dashboard](../assets/.labImages/EC2/attached_Resource_status.png)
+![EC2 Instance Dashboard](../assets/.labImages/EC2/attached_Resource_Status.png)
 
 Now click the Volume →Actions→Attachvolume
 

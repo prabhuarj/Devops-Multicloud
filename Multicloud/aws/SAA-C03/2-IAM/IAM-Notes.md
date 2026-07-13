@@ -1,363 +1,483 @@
-Getting Started with AWS Solutions Architect Associate (SAA-C03)
+# Getting Started with AWS Solutions Architect Associate (SAA-C03)
 
-Author: Prabhu Arjunan
+**Author:** Prabhu Arjunan
 
-AWS IAM – Identity and Access Management
-What is AWS IAM?
+---
 
-AWS Identity and Access Management (IAM) is a global AWS service that enables you to securely manage access to AWS resources. It controls who can access AWS resources, what actions they can perform, and under what conditions they can perform them.
+# AWS IAM (Identity and Access Management)
+
+## What is AWS IAM?
+
+AWS Identity and Access Management (IAM) is a **global AWS service** that enables you to securely manage access to AWS resources. IAM provides **authentication** (who you are) and **authorization** (what you can do).
 
 IAM answers the following questions:
 
-Who (user, application, or service) can access AWS resources?
-What actions can they perform?
-Which AWS resources can they access?
-Under what conditions is access allowed?
+- Who (user, application, or service) can access AWS resources?
+- What actions can they perform?
+- Which AWS resources can they access?
+- Under what conditions can they access those resources?
 
-Note: IAM follows the Principle of Least Privilege, meaning users and applications should receive only the minimum permissions required to perform their tasks.
+> **Note:** AWS IAM follows the **Principle of Least Privilege**, which means users and applications should receive only the minimum permissions required to perform their tasks.
 
-IAM Users, Groups, Roles, and Policies
-IAM User
+---
+
+# IAM Users, Groups, Roles, and Policies
+
+## IAM User
 
 An IAM User represents an individual person or application that requires access to AWS resources.
 
 Each IAM User has a unique username within an AWS account.
 
-Examples
+### Examples
 
-alice
-bob
-automation-user
+- alice
+- bob
+- automation-user
 
-Users can authenticate using:
+An IAM User can authenticate using:
 
-Username and Password (AWS Management Console)
-Access Keys (AWS CLI or SDK)
-IAM Group
+- Username & Password (AWS Management Console)
+- Access Keys (AWS CLI / SDK)
 
-An IAM Group is a collection of IAM Users who require the same permissions.
+---
+
+## IAM Group
+
+An IAM Group is a collection of IAM Users with the same permissions.
 
 Think of it as a team within an organization.
 
-Example Groups:
+### Example Groups
 
-Platform Engineers
-Application Developers
-Database Administrators
-Security Team
+- Platform Engineers
+- Application Developers
+- Database Administrators
+- Security Team
 
 Example:
 
+```text
 ApplicationDevelopers
-    ├── Alice
-    ├── Bob
-    └── Charlie
+├── Alice
+├── Bob
+└── Charlie
+```
 
-Instead of assigning permissions individually, you assign permissions once to the group.
+Instead of assigning permissions individually, attach the policy to the group.
 
-IAM Policy Evaluation
+---
 
-IAM evaluates permissions in the following order:
+## IAM Policy Evaluation Logic
 
-Explicit Deny
-Explicit Allow
-Implicit Deny
+AWS evaluates permissions in the following order:
 
-Example
+1. **Explicit Deny**
+2. **Explicit Allow**
+3. **Implicit Deny**
 
-Suppose you have two teams:
+### Example
 
-Application Developers
-
-Allowed:
-
-Launch EC2 instances
-Deploy Lambda functions
-
-Denied:
-
-Modify Amazon RDS databases
-Database Administrators (DBA)
+**Application Developers**
 
 Allowed:
 
-Manage Amazon RDS
-Perform database backups
+- Launch EC2 Instances
+- Deploy Lambda Functions
 
 Denied:
 
-Launch or terminate EC2 instances
+- Modify Amazon RDS Databases
 
-Even if another policy allows an action, an Explicit Deny always overrides it.
+**Database Administrators**
 
-IAM Role
+Allowed:
 
-An IAM Role is an AWS identity that provides temporary permissions.
+- Manage Amazon RDS
+- Perform Database Backups
 
-Unlike an IAM User, a role has no permanent credentials.
+Denied:
+
+- Launch or Terminate EC2 Instances
+
+> **Remember:** Explicit Deny always overrides Allow.
+
+---
+
+# IAM Role
+
+An IAM Role is an AWS identity that provides **temporary security credentials**.
+
+Unlike an IAM User, a role **does not have long-term credentials**.
 
 Roles are commonly assumed by:
 
-AWS Services (EC2, Lambda, ECS)
-Federated Users (Microsoft Entra ID, Okta)
-Another AWS Account
-Applications using STS
+- AWS Services (EC2, Lambda, ECS)
+- Federated Users (Microsoft Entra ID, Okta)
+- Another AWS Account
+- Applications using AWS STS
 
 Example:
 
+```text
 EC2 Instance
-
-↓
-
+      │
+      ▼
 Assume EC2Role
+      │
+      ▼
+STS Temporary Credentials
+      │
+      ▼
+Amazon S3
+```
 
-↓
+### Common Use Cases
 
-Temporary Credentials (STS)
+- EC2 accessing Amazon S3
+- Lambda accessing DynamoDB
+- ECS Tasks accessing Secrets Manager
+- GitHub Actions deploying infrastructure
+- Cross-account access
+- Identity Federation
 
-↓
+---
 
-Access Amazon S3
-
-Common use cases:
-
-EC2 accessing Amazon S3
-Lambda accessing DynamoDB
-GitHub Actions deploying infrastructure
-Cross-account access
-Federated users accessing AWS
-IAM Principals
+# IAM Principals
 
 An IAM Principal is any identity that can authenticate and make requests to AWS.
 
 Examples:
 
-IAM User
-IAM Role
-Federated User
-AWS Service
-Assuming a Role
+- IAM User
+- IAM Role
+- Federated User
+- AWS Service
 
-To access another AWS resource using temporary credentials, an identity must assume an IAM Role.
+---
+
+# Assuming an IAM Role
+
+To gain temporary permissions, an identity must **assume an IAM Role**.
 
 Example:
 
+```text
 Development Account
-
-↓
-
+        │
+        ▼
 Developer assumes ProductionAccessRole
-
-↓
-
-STS
-
-↓
-
+        │
+        ▼
+AWS STS
+        │
+        ▼
 Temporary Credentials
-
-↓
-
+        │
+        ▼
 Production AWS Resources
+```
 
-The target IAM Role must include a Trust Policy allowing the source account, user, or service to assume the role.
+The target role must trust the source identity using a **Trust Policy**.
 
-IAM Policies
+---
 
-Policies define what permissions are granted to IAM Principals.
+# IAM Policies
 
-Policies are written in JSON.
+Policies define **what permissions** an IAM Principal receives.
+
+Policies are written in **JSON**.
 
 Policies can be attached to:
 
-IAM Users
-IAM Groups
-IAM Roles
+- IAM Users
+- IAM Groups
+- IAM Roles
 
-AWS recommends using Customer Managed Policies or AWS Managed Policies instead of creating many inline policies.
+AWS recommends using **Customer Managed Policies** or **AWS Managed Policies** instead of creating many inline policies.
 
-Key Elements of an IAM Policy
-Version
+---
+
+# Key Elements of an IAM Policy
+
+## Version
 
 Specifies the policy language version.
 
-Current version:
-
+```json
 "Version": "2012-10-17"
-Statement
+```
+
+---
+
+## Statement
 
 Contains one or more permission statements.
 
-Effect
+---
 
-Specifies whether the action is:
+## Effect
 
-Allow
-Deny
-Action
+Defines whether the action is:
 
-Specifies the API operations allowed or denied.
+- Allow
+- Deny
+
+---
+
+## Action
+
+Specifies AWS API operations.
 
 Examples:
 
+```
 ec2:RunInstances
-
 ec2:DescribeInstances
-
 s3:GetObject
-
 lambda:InvokeFunction
-Resource
+```
 
-Specifies which AWS resource the action applies to.
+---
 
-Example:
+## Resource
 
-Specific S3 Bucket
-
-Specific EC2 Instance
-
-All Resources (*)
-Condition
-
-Provides fine-grained access control.
+Specifies which AWS resource the policy applies to.
 
 Examples:
 
-Source IP
-AWS Region
-Time of Day
-MFA Required
-IAM Access Analyzer and Credential Reports
-Credential Report
+- Specific S3 Bucket
+- Specific EC2 Instance
+- All Resources (`*`)
+
+---
+
+## Condition
+
+Adds fine-grained restrictions.
+
+Examples:
+
+- Source IP
+- AWS Region
+- MFA
+- Time
+- Resource Tags
+
+---
+
+# IAM Access Analyzer and Credential Reports
+
+## Credential Report
 
 Provides a downloadable report containing:
 
-IAM Users
-Password status
-MFA status
-Access Keys
-Password last changed
-Access key age
+- IAM Users
+- Password Status
+- MFA Status
+- Access Keys
+- Password Age
+- Access Key Age
 
 Useful for security audits.
 
-IAM Access Advisor
+---
+
+## IAM Access Advisor
 
 Shows which AWS services a user or role has recently accessed.
 
 Useful for removing unused permissions.
 
-IAM Access Analyzer
+---
+
+## IAM Access Analyzer
 
 Analyzes IAM and resource-based policies to identify:
 
-Public access
-Cross-account access
-External access
-Overly permissive policies
-Access Keys
+- Public Access
+- Cross-Account Access
+- External Access
+- Overly Permissive Policies
+
+---
+
+# Access Keys
 
 Access Keys provide programmatic access to AWS.
 
 Each Access Key consists of:
 
-Access Key ID
+## Access Key ID
 
 Acts like a username.
 
-Secret Access Key
+## Secret Access Key
 
 Acts like a password.
 
 Used by:
 
-AWS CLI
-AWS SDK
-Third-party applications
-Best Practices
-Rotate access keys regularly.
-Never commit keys to Git repositories.
-Never share access keys.
-Use IAM Roles instead of long-term access keys whenever possible.
-Common Use Cases
-Local development using AWS CLI
-Applications running outside AWS
-Third-party monitoring tools
-On-premises applications accessing AWS services
-Security Best Practices
-Avoid using the Root User for daily activities.
-Enable MFA for the Root User.
-Create individual IAM Users (if not using federation).
-Never share credentials.
-Use IAM Roles for AWS services.
-Follow the Principle of Least Privilege.
-Enforce strong password policies.
-Rotate credentials regularly.
-Use CloudTrail for auditing.
-Regularly review IAM Access Analyzer findings.
-Advanced IAM Topics
-Identity Federation
+- AWS CLI
+- AWS SDK
+- Third-party Applications
 
-Allows users from external Identity Providers such as:
+---
 
-Microsoft Entra ID
-Okta
-Google Workspace
+## Best Practices
 
-to access AWS without creating IAM Users.
+- Rotate access keys regularly.
+- Never commit access keys to Git repositories.
+- Never share access keys.
+- Store secrets securely using AWS Secrets Manager or Parameter Store.
+- Prefer IAM Roles over long-term access keys.
+
+---
+
+## Common Use Cases
+
+- Local Development
+- AWS CLI
+- Applications running outside AWS
+- Third-party monitoring tools
+- On-premises applications accessing AWS services
+
+---
+
+# IAM Security Best Practices
+
+- Do not use the Root User for daily activities.
+- Enable MFA for the Root User.
+- Create individual IAM Users (if not using federation).
+- Never share credentials.
+- Use IAM Roles for AWS services.
+- Follow the Principle of Least Privilege.
+- Enforce strong password policies.
+- Rotate credentials regularly.
+- Enable CloudTrail for auditing.
+- Regularly review IAM Access Analyzer findings.
+
+---
+
+# Advanced IAM Topics
+
+## Identity Federation
+
+Identity Federation allows users from external Identity Providers such as:
+
+- Microsoft Entra ID
+- Okta
+- Google Workspace
+
+to access AWS **without creating IAM Users**.
 
 Authentication is performed by the Identity Provider.
 
-AWS authorizes access by assigning an IAM Role and issuing temporary STS credentials.
+AWS authorizes the user by allowing them to assume an IAM Role and issuing temporary credentials through AWS STS.
 
-Resource-Based Policies
+### Authentication Flow
 
-Some AWS resources support policies attached directly to the resource.
+```text
+User
+    │
+    ▼
+Microsoft Entra ID / Okta
+    │
+    ▼
+SAML Assertion / OIDC Token
+    │
+    ▼
+AWS STS
+    │
+    ▼
+Temporary Credentials
+    │
+    ▼
+AWS Resources
+```
+
+---
+
+## Resource-Based Policies
+
+Some AWS resources allow policies to be attached directly to the resource.
 
 Examples:
 
-Amazon S3 Bucket Policy
-SNS Topic Policy
-SQS Queue Policy
-KMS Key Policy
+- Amazon S3 Bucket Policy
+- Amazon SNS Topic Policy
+- Amazon SQS Queue Policy
+- AWS KMS Key Policy
 
-These policies define who can access the resource and what actions they can perform.
+These policies define:
 
-Cross-Account Access
+- Who can access the resource
+- What actions they can perform
 
-Allows users or roles from one AWS account to access resources in another AWS account.
+---
+
+## Cross-Account Access
+
+Cross-account access allows users or roles from one AWS account to access resources in another AWS account.
 
 Example:
 
+```text
 Developer (Development Account)
-
-↓
-
+          │
+          ▼
 Assume ProductionAccessRole
-
-↓
-
-STS
-
-↓
-
+          │
+          ▼
+AWS STS
+          │
+          ▼
 Temporary Credentials
-
-↓
-
-Access Production Resources
+          │
+          ▼
+Production AWS Resources
+```
 
 No IAM User needs to be created in the target account.
 
-IAM Condition Keys
+---
 
-Condition keys provide fine-grained access control.
+## IAM Condition Keys
 
-Common examples:
+Condition Keys provide fine-grained access control.
 
-aws:SourceIp → Restrict access from specific IP addresses.
-aws:RequestedRegion → Restrict access to selected AWS Regions.
-aws:MultiFactorAuthPresent → Require MFA.
-s3:prefix → Restrict access to specific folders within an S3 bucket.
-Overall Feedback
+### Common Examples
+
+| Condition Key | Description |
+|---------------|-------------|
+| `aws:SourceIp` | Restrict access to specific IP addresses |
+| `aws:RequestedRegion` | Restrict actions to specific AWS Regions |
+| `aws:MultiFactorAuthPresent` | Require MFA |
+| `aws:CurrentTime` | Restrict access based on time |
+| `s3:prefix` | Restrict access to specific folders in an S3 bucket |
+
+---
+
+# Exam Tips
+
+✅ IAM is a **Global Service**
+
+✅ IAM follows the **Principle of Least Privilege**
+
+✅ **Explicit Deny** always overrides Allow.
+
+✅ IAM Roles provide **temporary credentials** using AWS STS.
+
+✅ Prefer **IAM Roles** over long-term Access Keys.
+
+✅ IAM Users are recommended only for individual users who require long-term credentials.
+
+✅ Federated users receive permissions through **IAM Roles**, not IAM Users.
+
+✅ Access Analyzer answers:
+
+> **Who can access my resources?**
+
+✅ Policy Simulator answers:
+
+> **What can this user or role access?**
